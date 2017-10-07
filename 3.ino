@@ -16,7 +16,7 @@ const char* host = "www.google.co.in";
 //const char* privateKey = "....................";
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   delay(10);
 
   // We start by connecting to a WiFi network
@@ -25,16 +25,16 @@ void setup() {
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
-  
+
   WiFi.begin(ssid, password);
-  
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
 
   Serial.println("");
-  Serial.println("WiFi connected");  
+  Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 }
@@ -42,11 +42,11 @@ void setup() {
 
 
 void loop() {
- 
+
 
   Serial.print("connecting to ");
   Serial.println(host);
-  
+
   // Use WiFiClient class to create TCP connections
   WiFiClient client;
   const int httpPort = 80;
@@ -54,7 +54,7 @@ void loop() {
     Serial.println("connection failed");
     return;
   }
-  
+
 //  // We now create a URI for the request
 //  String url = "/search?q=arduino";
 //  url += streamId;
@@ -62,18 +62,18 @@ void loop() {
 //  url += privateKey;
 //  url += "&value=";
 //  url += value;
-//  
+//
 //  Serial.print("Requesting URL: ");
 //  Serial.println(url);
-//  
+//
 //  // This will send the request to the server
 //  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-//               "Host: " + host + "\r\n" + 
+//               "Host: " + host + "\r\n" +
 //               "Connection: close\r\n\r\n");
                client.print("GET /search?q=arduino HTTP/1.1\r\n");
                client.println("Host: www.google.co.in \r\n");
                client.println("Connection: close\r\n\r\n");
-               
+
   unsigned long timeout = millis();
   while (client.available() == 0) {
     if (millis() - timeout > 5000) {
@@ -82,18 +82,18 @@ void loop() {
       return;
     }
   }
-  
+
   // Read all the lines of the reply from serverand print them to Serial
   String section="header";
   while(client.available()){
     String line = client.readStringUntil('\r');
     Serial.print(line);
-  
+
  if(section=="header")
  { //headers..
 //Serial.print(".");
   if (line=="\n")
-  { //skips the empty space at the beginning 
+  { //skips the empty space at the beginning
 section="json";
   }
  }
@@ -136,5 +136,3 @@ Serial.println(Motor1);
  Serial.println();
  Serial.println("closing connection");
  }
-
-
